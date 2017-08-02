@@ -54,10 +54,7 @@ class ResultScreen extends Component {
     }
 
     fetch('https://api.yelp.com/v3/businesses/search?term='+params.food+'&location='+params.location, {
-      method: 'GET',
-      headers: {
-        'Authorization': 'Bearer yiQpEO7eS-iMwnNbENqMeft6wydLSSiHHW7DPsWaj5ZO_ZE_USzlnUbv2E04vsPQaTO4b8Tm9JPBfj1joelvm2kRqOYj-ruYnPKRGqOzVJmGroKWC4qyNBG2K8CAWXYx'
-      }
+      method: 'GET'
     })
     .then((response) => response.json())
     .then((responseJson) => {
