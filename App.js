@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ActivityIndicator, AppRegistry, Button, FlatList, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, Alert, Button, FlatList, Image, StyleSheet, Text, TextInput, TouchableHighlight, View } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 
 class HomeScreen extends Component {
@@ -10,30 +10,96 @@ class HomeScreen extends Component {
     super(props);
     this.state = {
       food: 'Burgers',
-      location: 'Phoenix'
+      location: 'Phoenix',
+      loading: false
     };
   }
 
+  _locateButtonPressed() {
+    navigator.geolocation.getCurrentPosition((pos) => this.setState({
+      currentLocation: pos.coords,
+      location: 'Current Location'
+    }));
+  }
+
+  _search() {
+    this.setState({ loading: true });
+
+    var url = 'https://api.yelp.com/v3/businesses/search?term='+this.state.food;
+    if (!this.state.currentLocation) {
+      url += '&location='+this.state.location;
+    }
+    else {
+      url += '&latitude=' + this.state.currentLocation.latitude + '&longitude=' + this.state.currentLocation.longitude;
+    }
+
+    console.log(url);
+    fetch(url, {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer yiQpEO7eS-iMwnNbENqMeft6wydLSSiHHW7DPsWaj5ZO_ZE_USzlnUbv2E04vsPQaTO4b8Tm9JPBfj1joelvm2kRqOYj-ruYnPKRGqOzVJmGroKWC4qyNBG2K8CAWXYx'
+      }
+    })
+    .then((response) => response.json())
+    .then((responseJson) => {
+      if (responseJson.businesses.length > 0) {
+        this.setState({
+          loading: false
+        });
+        this.props.navigation.navigate('Result', {
+          food: this.state.food,
+          location: this.state.location,
+          businesses: responseJson.businesses
+        });
+      }
+      else {
+        this.setState({
+          loading: false
+        });
+        Alert.alert('No places found.');
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+  }
+
   render() {
-    const { navigate } = this.props.navigation;
     return (
       <View style={styles.container}>
         <TextInput
           style={styles.input}
           placeholder="Food"
           onChangeText={(text) => this.setState({ food: text })}
+          value={this.state.food}
         />
-        <TextInput
-          style={styles.input}
-          placeholder="Location"
-          onChangeText={(text) => this.setState({ location: text })}
-        />
+        <View>
+          <TextInput
+            style={styles.input}
+            placeholder="Location"
+            onChangeText={(text) => this.setState({ location: text })}
+            value={this.state.location}
+          />
+          <TouchableHighlight
+            style={styles.locateButton}
+            onPress={this._locateButtonPressed.bind(this)}
+            underlayColor={'transparent'}
+          >
+            <Image
+              style={styles.locateImage}
+              source={require('./navigation-icon.png')}
+            />
+          </TouchableHighlight>
+        </View>
         <Button
-          onPress={() => navigate('Result', {
-            food: this.state.food,
-            location: this.state.location
-          })}
+          onPress={this._search.bind(this)}
           title="Search"
+          disabled={this.state.loading}
+        />
+        <ActivityIndicator
+          animating={this.state.loading}
+          style={styles.spinner}
+          size='large'
         />
       </View>
     );
@@ -42,35 +108,17 @@ class HomeScreen extends Component {
 
 class ResultScreen extends Component {
   static navigationOptions = ({ navigation }) => ({
-    title: `${navigation.state.params.food} in ${navigation.state.params.location}`
+    title: `${navigation.state.params.food} near ${navigation.state.params.location}`
   });
 
   constructor(props) {
     super(props);
+
     const { params } = this.props.navigation.state;
-
     this.state = {
-      loading: true
+      businesses: params.businesses
     }
-
-    fetch('https://api.yelp.com/v3/businesses/search?term='+params.food+'&location='+params.location, {
-      method: 'GET'
-    })
-    .then((response) => response.json())
-    .then((responseJson) => {
-      responseJson.businesses.forEach(function(business) {
-        console.log(business.name)
-      })
-      this.setState({
-        businesses: responseJson.businesses,
-        loading: false
-      })
-    })
-    .catch((error) => {
-      console.error(error);
-    });
   }
-
 
   render() {
     return (
@@ -79,11 +127,6 @@ class ResultScreen extends Component {
           data={this.state.businesses}
           keyExtractor={(item, index) => item.id}
           renderItem={({item}) => <Text>{item.name}</Text>}
-        />
-        <ActivityIndicator
-          animating={this.state.loading}
-          style={styles.spinner}
-          size='large'
         />
       </View>
     )
@@ -103,15 +146,16 @@ const styles = StyleSheet.create({
     borderColor: 'gainsboro'
   },
   spinner: {
+  },
+  locateButton: {
     position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-    alignItems: 'center',
-    justifyContent: 'center'
+    right: 15,
+    top: 15
+  },
+  locateImage: {
+    width: 20,
+    height: 20
   }
-
 });
 
 export default App = StackNavigator({
