@@ -11,6 +11,7 @@ class HomeScreen extends Component {
     this.state = {
       food: 'Burgers',
       location: 'Phoenix',
+      currentLocation: null,
       loading: false
     };
   }
@@ -26,7 +27,7 @@ class HomeScreen extends Component {
     this.setState({ loading: true });
 
     var url = 'https://api.yelp.com/v3/businesses/search?term='+this.state.food;
-    if (!this.state.currentLocation) {
+    if (this.state.currentLocation === null) {
       url += '&location='+this.state.location;
     }
     else {
@@ -77,7 +78,7 @@ class HomeScreen extends Component {
           <TextInput
             style={styles.input}
             placeholder="Location"
-            onChangeText={(text) => this.setState({ location: text })}
+            onChangeText={(text) => this.setState({ location: text, currentLocation: null })}
             value={this.state.location}
           />
           <TouchableHighlight
