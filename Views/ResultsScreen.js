@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FlatList, StyleSheet, View, Text } from 'react-native';
+import { FlatList, Image, StyleSheet, View, Text, TouchableHighlight } from 'react-native';
 
 export default class ResultScreen extends Component {
   static navigationOptions = ({ navigation }) => ({
@@ -21,9 +21,28 @@ export default class ResultScreen extends Component {
         <FlatList
           data={this.state.businesses}
           keyExtractor={(item, index) => item.id}
-          renderItem={({item}) => <Text>{item.name}</Text>}
+          renderItem={({item}) => <ListItem item={item}/> }
         />
       </View>
+    )
+  }
+}
+
+class ListItem extends Component {
+  render() {
+    return (
+      <TouchableHighlight
+        onPress={() => console.log(this.props.item.url) }
+        underlayColor='transparent'
+        activeOpacity={.5} >
+        <View style={styles.listItem}>
+          <Image
+            style={styles.listItemImage}
+            source={{ uri: this.props.item.image_url }}
+          />
+          <Text style={styles.listItemText}>{this.props.item.name}</Text>
+        </View>
+      </TouchableHighlight>
     )
   }
 }
@@ -33,5 +52,25 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: 16
+  },
+  listItem: {
+    height: 50,
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingBottom: 10,
+    marginBottom: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: 'gainsboro'
+  },
+  listItemImage: {
+    flex: 2,
+    height: 50
+  },
+  listItemText: {
+    flex: 8,
+    fontSize: 16,
+    paddingLeft: 8,
   }
 });
