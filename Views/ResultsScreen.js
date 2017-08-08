@@ -21,7 +21,7 @@ export default class ResultScreen extends Component {
         <FlatList
           data={this.state.businesses}
           keyExtractor={(item, index) => item.id}
-          renderItem={({item}) => <ListItem item={item}/> }
+          renderItem={({item}) => <ListItem item={item} screenProps={{ rootNavigation: this.props.navigation }}/> }
         />
       </View>
     )
@@ -29,10 +29,16 @@ export default class ResultScreen extends Component {
 }
 
 class ListItem extends Component {
+  _onPressBusiness() {
+    this.props.screenProps.rootNavigation.navigate('Detail', {
+      business: this.props.item
+    });
+  }
+
   render() {
     return (
       <TouchableHighlight
-        onPress={() => console.log(this.props.item.url) }
+        onPress={ this._onPressBusiness.bind(this) }
         underlayColor='transparent'
         activeOpacity={.5} >
         <View style={styles.listItem}>
