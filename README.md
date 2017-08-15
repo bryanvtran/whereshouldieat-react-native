@@ -24,7 +24,6 @@ npm run ios
 
 ## HomeScreen
 
-
 Implement basic components and styles. Introduce concept of state.
 
 App.js
@@ -164,6 +163,8 @@ const styles = StyleSheet.create({
   },
 });
 ```
+
+## Navigation
 
 Full Implementation with navigation
 
@@ -433,6 +434,8 @@ const styles = StyleSheet.create({
 });
 ```
 
+## ResultsScreen
+
 Views/ResultsScreen.js
 
 ```javascript
@@ -492,7 +495,6 @@ const styles = StyleSheet.create({
 });
 
 ```
-
 
 Creating the results screen and updating the navigation
 
@@ -583,6 +585,8 @@ const styles = StyleSheet.create({
 });
 
 ```
+
+## Geolocation
 
 Adding geolocation to the homepage, might need to download the location icon too
 
@@ -720,6 +724,8 @@ const styles = StyleSheet.create({
   }
 });
 ```
+
+## Bonus: DetailScreen
 
 Adding a DetailSceen.js
 
