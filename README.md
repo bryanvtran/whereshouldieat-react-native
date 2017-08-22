@@ -11,7 +11,9 @@ Features:
 Prerequisites:
 
  * Sign up for the [Yelp API](https://www.yelp.com/developers/documentation/v3/) to get token
- * Download [react native cli](https://facebook.github.io/react-native/docs/getting-started.html) and other stuff necessary for demo (Mac - Xcode, windows - android stuff)
+ * Make sure you have [Node](https://nodejs.org/en/) installed (npm 4.6.1 recommended)
+ * Download [react native cli](https://facebook.github.io/react-native/docs/getting-started.html) and other stuff necessary for demo (Mac - watchman and Xcode, windows - android stuff)
+
  * Familiarize self with javascript, html/css (exposure to web development)
 
 Setting up the application:
@@ -727,7 +729,7 @@ const styles = StyleSheet.create({
 
 ## Bonus: DetailScreen
 
-Adding a DetailSceen.js
+Adding a DetailScreen.js
 
 App.js
 
